@@ -370,7 +370,7 @@
     <div class="container">
         <div class="header">
             <h1>🐉 Golden Dragon</h1>
-            <div class="customer-code" id="customerCode">GD-1234</div>
+            <div class="customer-code" id="customerCode">Загрузка...</div>
         </div>
 
         <!-- Главная -->
@@ -504,13 +504,12 @@
 
         <!-- Профиль -->
         <div id="profileTab" class="tab-content">
-            <!-- Меню профиля -->
             <div id="profileMenu" class="page-content active">
                 <div class="profile-header">
                     <div class="profile-avatar" id="profileAvatar">👤</div>
                     <div class="profile-info">
-                        <h2 id="profileName">usmnv</h2>
-                        <p id="profileCode">1180975</p>
+                        <h2 id="profileName">Загрузка...</h2>
+                        <p id="profileCode">Загрузка...</p>
                     </div>
                 </div>
                 <div class="profile-grid">
@@ -528,23 +527,16 @@
                 </div>
             </div>
 
-            <!-- Страницы профиля -->
+            <!-- Страницы профиля (минимальные заглушки) -->
             <div id="ordersPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>📦 Мои заказы</h2>
-                <div class="card">
-                    CN123456789 – В обработке<br>
-                    CN987654321 – Доставлен<br>
-                    CN555666777 – В пути
-                </div>
+                <div class="card" id="ordersList">Загрузка...</div>
             </div>
             <div id="historyPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>📊 История операций</h2>
-                <div class="card">
-                    Пополнение: +5000 ₽ (10.02.2026)<br>
-                    Оплата заказа: -3200 ₽ (12.02.2026)
-                </div>
+                <div class="card">История появится после подключения API</div>
             </div>
             <div id="accountPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
@@ -554,11 +546,7 @@
             <div id="pickupPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>📍 Пункты выдачи</h2>
-                <div class="card">
-                    Москва, ул. Тверская, 1<br>
-                    Санкт-Петербург, Невский пр., 22<br>
-                    Новосибирск, Красный пр., 50
-                </div>
+                <div id="pickupList" class="card">📍 Москва, ул. Тверская, 1<br>📍 Санкт-Петербург, Невский пр., 22<br>📍 Новосибирск, Красный пр., 50</div>
             </div>
             <div id="calculatorPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
@@ -580,11 +568,11 @@
                     </div>
                     <div class="input-group">
                         <label class="input-label">Имя</label>
-                        <input type="text" id="settingsName" class="input-field" value="usmnv">
+                        <input type="text" id="settingsName" class="input-field" value="">
                     </div>
                     <div class="input-group">
                         <label class="input-label">Номер телефона</label>
-                        <input type="tel" id="settingsPhone" class="input-field" value="+7 999 123 45 67" placeholder="Введите номер">
+                        <input type="tel" id="settingsPhone" class="input-field" value="" placeholder="Введите номер">
                     </div>
                     <div class="input-group">
                         <label class="input-label">Регион (страна)</label>
@@ -601,7 +589,7 @@
             <div id="contactPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>📞 Связаться с нами</h2>
-                <div class="card">
+                <div class="card" id="contactInfo">
                     📞 Телефон: +7 (800) 123-45-67<br>
                     📧 Email: support@golden-dragon.com<br>
                     ⏰ Время работы: Пн-Пт 9:00-21:00 МСК<br>
@@ -611,7 +599,7 @@
             <div id="prohibitedPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>🚫 Запрещенные предметы</h2>
-                <div class="card">
+                <div class="card" id="prohibitedList">
                     • Оружие и боеприпасы<br>
                     • Наркотические вещества<br>
                     • Взрывчатые вещества<br>
@@ -650,15 +638,36 @@
             tg.expand();
             tg.ready();
 
-            // ---------- Получаем имя пользователя из Telegram ----------
+            // ---------- Получаем имя из Telegram и код из URL ----------
             const user = tg.initDataUnsafe?.user;
-            const firstName = user?.first_name || 'Клиент';
+            const telegramName = user?.first_name || 'Клиент';
+            // Если в localStorage есть сохранённое имя, используем его
+            let firstName = localStorage.getItem('userName') || telegramName;
+            const customerCode = new URLSearchParams(window.location.search).get('code') || 'GD-0000';
 
-            // ---------- Обновляем интерфейс ----------
-            document.getElementById('greeting').innerText = `👋 Привет, ${firstName}!`;
-            document.getElementById('profileName').innerText = firstName;
+            // ---------- Обновляем интерфейс с именем и кодом ----------
+            function updateUserInterface() {
+                document.getElementById('greeting').innerText = `👋 Привет, ${firstName}!`;
+                document.getElementById('customerCode').innerText = customerCode;
+                document.getElementById('profileName').innerText = firstName;
+                document.getElementById('profileCode').innerText = customerCode;
+                document.getElementById('profileAvatar').innerText = localStorage.getItem('userAvatar') || '👤';
+                document.getElementById('settingsAvatar').innerText = localStorage.getItem('userAvatar') || '👤';
+                document.getElementById('accountBalance').innerText = '12500 ₽'; // пока статика
+                // Заполняем поле имени в настройках
+                document.getElementById('settingsName').value = firstName;
+                // Заполняем сохранённые телефон и страну
+                document.getElementById('settingsPhone').value = localStorage.getItem('userPhone') || '';
+                document.getElementById('settingsCountry').value = localStorage.getItem('userCountry') || 'ru';
+                // Отмечаем выбранный аватар
+                const savedAvatar = localStorage.getItem('userAvatar');
+                document.querySelectorAll('.avatar-option').forEach(opt => {
+                    opt.classList.toggle('selected', opt.dataset.avatar === savedAvatar);
+                });
+            }
+            updateUserInterface();
 
-            // ---------- Статические данные ----------
+            // ---------- Статические данные для валют ----------
             const currencies = [
                 { code: 'USD', flag: '🇺🇸', name: 'USD', buy: 9.39, sell: 9.48 },
                 { code: 'RUB', flag: '🇷🇺', name: 'RUB', buy: 0.1212, sell: 0.1236 },
@@ -835,7 +844,6 @@
             const settingsCountryEl = document.getElementById('settingsCountry');
             const profileAvatarEl = document.getElementById('profileAvatar');
             const settingsAvatarEl = document.getElementById('settingsAvatar');
-            const accountBalanceEl = document.getElementById('accountBalance');
 
             window.selectAvatar = function(avatar) {
                 localStorage.setItem('userAvatar', avatar);
@@ -849,28 +857,21 @@
                 const newName = settingsNameEl.value.trim();
                 const newPhone = settingsPhoneEl.value.trim();
                 const newCountry = settingsCountryEl.value;
-                if (newName) localStorage.setItem('userName', newName);
-                if (newPhone) localStorage.setItem('userPhone', newPhone);
+                if (newName) {
+                    firstName = newName; // обновляем глобальную переменную
+                    localStorage.setItem('userName', newName);
+                }
+                if (newPhone) {
+                    localStorage.setItem('userPhone', newPhone);
+                }
                 localStorage.setItem('userCountry', newCountry);
+                
+                // Обновляем интерфейс везде, где используется имя
+                updateUserInterface();
+                
                 alert('Настройки сохранены!');
                 showProfileMenu();
             };
-
-            // Загрузка сохранённых настроек
-            const savedAvatar = localStorage.getItem('userAvatar');
-            if (savedAvatar) {
-                profileAvatarEl.innerText = savedAvatar;
-                settingsAvatarEl.innerText = savedAvatar;
-                document.querySelectorAll('.avatar-option').forEach(opt => {
-                    if (opt.dataset.avatar === savedAvatar) opt.classList.add('selected');
-                });
-            }
-            const savedName = localStorage.getItem('userName');
-            if (savedName) settingsNameEl.value = savedName;
-            const savedPhone = localStorage.getItem('userPhone');
-            if (savedPhone) settingsPhoneEl.value = savedPhone;
-            const savedCountry = localStorage.getItem('userCountry');
-            if (savedCountry) settingsCountryEl.value = savedCountry;
         });
     </script>
 </body>
