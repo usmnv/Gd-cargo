@@ -6,7 +6,7 @@
     <title>Golden Dragon</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Все стили без изменений – оставлены как в исходном файле */
+        /* Все стили без изменений – можно скопировать из предыдущей версии */
         :root {
             --bg-color: var(--tg-theme-bg-color, #ffffff);
             --text-color: var(--tg-theme-text-color, #000000);
@@ -394,8 +394,8 @@
                     </div>
                     <div class="stat-item">
                         <div class="stat-icon">💰</div>
-                        <div class="stat-value" id="usdRate">-</div>
-                        <div class="stat-label">USD</div>
+                        <div class="stat-value" id="totalToPay">0 $</div>
+                        <div class="stat-label">К оплате</div>
                     </div>
                 </div>
                 <button class="button" id="myOrdersBtn">📋 Мои заказы</button>
@@ -415,13 +415,13 @@
             </div>
         </div>
 
-        <!-- Услуги (статические) -->
+        <!-- Услуги -->
         <div id="servicesTab" class="tab-content">
             <h2 style="margin-bottom: 16px;">🚚 Наши услуги</h2>
             <div class="services-grid" id="servicesGrid"></div>
         </div>
 
-        <!-- Калькулятор (работает) -->
+        <!-- Калькулятор -->
         <div id="calcTab" class="tab-content">
             <h2 style="margin-bottom: 16px;">🧮 Калькулятор</h2>
             <div class="card">
@@ -467,7 +467,7 @@
             </div>
         </div>
 
-        <!-- Валюта (с реальными данными) -->
+        <!-- Валюта -->
         <div id="currencyTab" class="tab-content">
             <div class="currency-switch">
                 <button id="showRatesBtn" class="active">Валюты</button>
@@ -515,7 +515,7 @@
             </div>
         </div>
 
-        <!-- Профиль (реальные данные) -->
+        <!-- Профиль -->
         <div id="profileTab" class="tab-content">
             <div id="profileMenu" class="page-content active">
                 <div class="profile-header">
@@ -527,11 +527,8 @@
                 </div>
                 <div class="profile-grid">
                     <div class="profile-grid-item" data-page="orders"><i class="fas fa-box"></i><span>Заказы</span></div>
-                    <div class="profile-grid-item" data-page="history"><i class="fas fa-history"></i><span>История</span></div>
                     <div class="profile-grid-item" data-page="account"><i class="fas fa-wallet"></i><span>Счет</span></div>
                 </div>
-                <div class="profile-menu-item" data-page="pickup"><i class="fas fa-map-marker-alt"></i> Пункты выдачи</div>
-                <div class="profile-menu-item" data-page="calculator"><i class="fas fa-calculator"></i> Калькулятор</div>
                 <div class="profile-menu-item" data-page="settings"><i class="fas fa-cog"></i> Настройки</div>
                 <div class="support-section">
                     <div class="support-title">Центр поддержки</div>
@@ -540,31 +537,16 @@
                 </div>
             </div>
 
-            <!-- Страницы профиля (реальные данные) -->
+            <!-- Страницы профиля -->
             <div id="ordersPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>📦 Мои заказы</h2>
                 <div id="ordersList" class="card">Загрузка...</div>
             </div>
-            <div id="historyPage" class="page-content">
-                <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
-                <h2>📊 История операций</h2>
-                <div class="card">История появится после подключения API</div>
-            </div>
             <div id="accountPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
                 <h2>💰 Счет</h2>
                 <div class="card">Текущий баланс: <strong id="accountBalance">0 ₽</strong></div>
-            </div>
-            <div id="pickupPage" class="page-content">
-                <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
-                <h2>📍 Пункты выдачи</h2>
-                <div id="pickupList" class="card"></div>
-            </div>
-            <div id="calculatorPage" class="page-content">
-                <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
-                <h2>🧮 Калькулятор</h2>
-                <div class="card">Перейдите на вкладку "Калькулятор" внизу.</div>
             </div>
             <div id="settingsPage" class="page-content">
                 <div class="back-button" onclick="showProfileMenu()"><i class="fas fa-arrow-left"></i> Назад</div>
@@ -586,15 +568,6 @@
                     <div class="input-group">
                         <label class="input-label">Номер телефона</label>
                         <input type="tel" id="settingsPhone" class="input-field" value="" placeholder="Введите номер">
-                    </div>
-                    <div class="input-group">
-                        <label class="input-label">Регион (страна)</label>
-                        <select id="settingsCountry" class="input-select">
-                            <option value="ru">Россия</option>
-                            <option value="tj">Таджикистан</option>
-                            <option value="kz">Казахстан</option>
-                            <option value="uz">Узбекистан</option>
-                        </select>
                     </div>
                     <button class="button" onclick="saveSettings()">Сохранить</button>
                 </div>
@@ -629,22 +602,18 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async function() {
-            // ---------- Telegram Web App ----------
             const tg = window.Telegram?.WebApp;
             if (tg) {
                 tg.expand();
                 tg.ready();
             }
 
-            // ---------- НАСТРОЙКИ ----------
-            // ⚠️ ЗАМЕНИТЕ НА АДРЕС ВАШЕГО СЕРВИСА НА KOYEB
-            const API_BASE = 'https://common-adara-goldendragon-845bca68.koyeb.app'; 
+            const API_BASE = 'https://common-adara-goldendragon-845bca68.koyeb.app';
             
             const user = tg?.initDataUnsafe?.user;
             const USER_ID = user?.id;
             const customerCodeFromUrl = new URLSearchParams(window.location.search).get('code');
 
-            // ---------- Глобальные данные ----------
             let userData = {
                 firstName: user?.first_name || 'Клиент',
                 customerCode: customerCodeFromUrl || 'GD-0000',
@@ -658,7 +627,6 @@
             let userOrders = [];
             let exchangeRates = [];
 
-            // ---------- ЗАГРУЗКА ДАННЫХ С API ----------
             async function loadUserData() {
                 if (!USER_ID) return;
                 try {
@@ -671,8 +639,6 @@
                         userData.deliveredCount = data.delivered_count;
                         userData.firstName = data.first_name || user?.first_name || 'Клиент';
                         userData.phone = data.phone_number || '';
-                    } else {
-                        console.warn('API вернул ошибку', res.status);
                     }
                 } catch (e) {
                     console.warn('Ошибка загрузки пользователя', e);
@@ -686,8 +652,6 @@
                     if (res.ok) {
                         const data = await res.json();
                         userOrders = data.orders;
-                    } else {
-                        console.warn('Ошибка загрузки заказов', res.status);
                     }
                 } catch (e) {
                     console.warn('Ошибка загрузки заказов', e);
@@ -701,8 +665,6 @@
                         const data = await res.json();
                         exchangeRates = data.rates;
                     } else {
-                        console.warn('Ошибка загрузки курсов', res.status);
-                        // Если API не вернул данные, используем заглушку, чтобы интерфейс не был пустым
                         exchangeRates = [
                             { code: 'USD', flag: '🇺🇸', name: 'USD', rate: 95 },
                             { code: 'RUB', flag: '🇷🇺', name: 'RUB', rate: 1 },
@@ -715,14 +677,18 @@
                     }
                 } catch (e) {
                     console.warn('Ошибка загрузки курсов', e);
-                    exchangeRates = [ /* заглушка как выше */ ];
+                    exchangeRates = [];
                 }
             }
 
-            // Загружаем всё параллельно
             await Promise.all([loadUserData(), loadOrders(), loadExchangeRates()]);
 
-            // ---------- Услуги (статические) ----------
+            function calculateTotalToPay() {
+                return userOrders
+                    .filter(order => order.status === 'В обработке')
+                    .reduce((sum, order) => sum + (order.price || 0), 0);
+            }
+
             const services = [
                 { icon: '✈️', title: 'Авиа доставка', desc: 'Быстро и надёжно', fullDesc: 'Авиаперевозка грузов от 3 до 7 дней.' },
                 { icon: '🚛', title: 'Авто карго', desc: 'Оптимально по цене', fullDesc: 'Автомобильные перевозки от 14 до 21 дня.' },
@@ -750,15 +716,6 @@
                 servicesGrid.appendChild(card);
             });
 
-            // ---------- Пункты выдачи (статические) ----------
-            const pickupPoints = {
-                ru: ['Москва, ул. Тверская, 1', 'Санкт-Петербург, Невский пр., 22', 'Новосибирск, Красный пр., 50'],
-                tj: ['Душанбе, пр. Рудаки, 10', 'Худжанд, ул. Ленина, 5'],
-                kz: ['Алматы, пр. Абая, 100', 'Нур-Султан, ул. Кабанбай батыра, 15'],
-                uz: ['Ташкент, ул. Амира Темура, 30', 'Самарканд, ул. Регистан, 2']
-            };
-
-            // ---------- Контакты (статические) ----------
             const contacts = {
                 phone: '+7 (800) 123-45-67',
                 email: 'support@golden-dragon.com',
@@ -766,7 +723,6 @@
                 chat: '@goldendragon_support'
             };
 
-            // ---------- Запрещённые предметы (статические) ----------
             const prohibitedItems = [
                 'Оружие и боеприпасы',
                 'Наркотические вещества',
@@ -780,12 +736,12 @@
                 'Деньги и ценные бумаги'
             ];
 
-            // ---------- Элементы интерфейса ----------
             const customerCodeEl = document.getElementById('customerCode');
             const greetingEl = document.getElementById('greeting');
             const balanceEl = document.getElementById('balance');
             const ordersCountEl = document.getElementById('ordersCount');
             const deliveredCountEl = document.getElementById('deliveredCount');
+            const totalToPayEl = document.getElementById('totalToPay');
             const profileNameEl = document.getElementById('profileName');
             const profileCodeEl = document.getElementById('profileCode');
             const profileAvatarEl = document.getElementById('profileAvatar');
@@ -793,7 +749,6 @@
             const accountBalanceEl = document.getElementById('accountBalance');
             const settingsNameEl = document.getElementById('settingsName');
             const settingsPhoneEl = document.getElementById('settingsPhone');
-            const settingsCountryEl = document.getElementById('settingsCountry');
 
             function updateUserUI() {
                 greetingEl.innerText = `👋 Привет, ${userData.firstName}!`;
@@ -801,6 +756,7 @@
                 balanceEl.innerText = userData.balance + ' ₽';
                 ordersCountEl.innerText = userData.ordersCount;
                 deliveredCountEl.innerText = userData.deliveredCount;
+                totalToPayEl.innerText = calculateTotalToPay() + ' $';
                 profileNameEl.innerText = userData.firstName;
                 profileCodeEl.innerText = userData.customerCode;
                 profileAvatarEl.innerText = userData.avatar;
@@ -808,14 +764,12 @@
                 accountBalanceEl.innerText = userData.balance + ' ₽';
                 settingsNameEl.value = userData.firstName;
                 settingsPhoneEl.value = userData.phone;
-                settingsCountryEl.value = userData.country;
 
                 document.querySelectorAll('.avatar-option').forEach(opt => {
                     opt.classList.toggle('selected', opt.dataset.avatar === userData.avatar);
                 });
             }
 
-            // ---------- Валютные таблицы ----------
             function renderCurrencyTables() {
                 const mainCurrencies = exchangeRates.filter(c => ['USD', 'RUB', 'CNY'].includes(c.code));
                 const ratesTable = document.getElementById('currencyRatesTable');
@@ -823,8 +777,6 @@
                     ratesTable.innerHTML = mainCurrencies.map(c => 
                         `<tr><td><span class="currency-flag">${c.flag}</span> ${c.name}</td><td>${(c.rate * 0.98).toFixed(2)}</td><td>${(c.rate * 1.02).toFixed(2)}</td></tr>`
                     ).join('');
-                } else {
-                    ratesTable.innerHTML = '<tr><td colspan="3">Нет данных</td></tr>';
                 }
 
                 const allRatesTable = document.getElementById('allRatesTable');
@@ -832,42 +784,9 @@
                     allRatesTable.innerHTML = exchangeRates.map(c => 
                         `<tr><td><span class="currency-flag">${c.flag}</span> ${c.name}</td><td>${(c.rate * 0.98).toFixed(4)}</td><td>${(c.rate * 1.02).toFixed(4)}</td></tr>`
                     ).join('');
-                } else {
-                    allRatesTable.innerHTML = '<tr><td colspan="3">Нет данных</td></tr>';
                 }
-
-                const fromSelect = document.getElementById('fromCurrency');
-                const toSelect = document.getElementById('toCurrency');
-                if (exchangeRates.length) {
-                    fromSelect.innerHTML = exchangeRates.map(c => `<option value="${c.rate}" data-code="${c.code}">${c.flag} ${c.code}</option>`).join('');
-                    toSelect.innerHTML = exchangeRates.map(c => `<option value="${c.rate}" data-code="${c.code}">${c.flag} ${c.code}</option>`).join('');
-
-                    const usd = exchangeRates.find(c => c.code === 'USD');
-                    const eur = exchangeRates.find(c => c.code === 'EUR');
-                    if (usd) fromSelect.value = usd.rate;
-                    if (eur) toSelect.value = eur.rate;
-                }
-
-                document.getElementById('usdRate').innerText = exchangeRates.find(c => c.code === 'USD')?.rate || '-';
-                updateConverter();
             }
 
-            // ---------- Конвертер ----------
-            function updateConverter() {
-                const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
-                const fromRate = parseFloat(document.getElementById('fromCurrency').value) || 1;
-                const toRate = parseFloat(document.getElementById('toCurrency').value) || 1;
-                const result = (fromAmount * fromRate) / toRate;
-                document.getElementById('toAmount').value = result.toFixed(2);
-                const fromCode = document.getElementById('fromCurrency').selectedOptions[0]?.dataset.code || '?';
-                const toCode = document.getElementById('toCurrency').selectedOptions[0]?.dataset.code || '?';
-                document.getElementById('converterRate').innerText = `1 ${fromCode} = ${(fromRate / toRate).toFixed(4)} ${toCode}`;
-            }
-            document.getElementById('fromAmount').addEventListener('input', updateConverter);
-            document.getElementById('fromCurrency').addEventListener('change', updateConverter);
-            document.getElementById('toCurrency').addEventListener('change', updateConverter);
-
-            // ---------- Переключение табов ----------
             const tabs = document.querySelectorAll('.tab-item');
             const contents = {
                 home: document.getElementById('homeTab'),
@@ -887,7 +806,6 @@
                 });
             });
 
-            // ---------- Управление страницами профиля ----------
             window.showProfileMenu = function() {
                 document.querySelectorAll('#profileTab .page-content').forEach(p => p.classList.remove('active'));
                 document.getElementById('profileMenu').classList.add('active');
@@ -909,18 +827,28 @@
                 document.getElementById('serviceDetailDesc').innerText = desc;
             };
 
-            // ---------- Клики по пунктам профиля ----------
             document.querySelectorAll('[data-page]').forEach(el => {
                 el.addEventListener('click', function() {
                     const page = this.dataset.page;
-                    if (page === 'calculator') {
-                        document.querySelector('.tab-item[data-tab="calc"]').click();
-                        return;
-                    }
                     showProfilePage(page + 'Page');
-                    if (page === 'pickup') {
-                        const points = pickupPoints[userData.country] || pickupPoints.ru;
-                        document.getElementById('pickupList').innerHTML = points.map(p => `<div>📍 ${p}</div>`).join('');
+                    if (page === 'orders') {
+                        const ordersList = document.getElementById('ordersList');
+                        if (userOrders.length) {
+                            ordersList.innerHTML = userOrders.map(o => `
+                                <div style="background:var(--secondary-bg-color); border-radius:12px; padding:12px; margin-bottom:8px;">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-family:monospace; font-weight:600;">${o.track_code}</span>
+                                        <span style="color:${o.status === 'Доставлен' ? '#4CAF50' : '#FFC107'}; font-weight:600;">${o.status}</span>
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; margin-top:8px;">
+                                        <span>💰 Сумма: $${o.price || 0}</span>
+                                        <span style="color:var(--hint-color); font-size:12px;">${o.date ? new Date(o.date).toLocaleDateString() : ''}</span>
+                                    </div>
+                                </div>
+                            `).join('');
+                        } else {
+                            ordersList.innerHTML = '<div class="card">Нет заказов</div>';
+                        }
                     } else if (page === 'contact') {
                         document.getElementById('contactInfo').innerHTML = `
                             📞 Телефон: ${contacts.phone}<br>
@@ -930,29 +858,15 @@
                         `;
                     } else if (page === 'prohibited') {
                         document.getElementById('prohibitedList').innerHTML = prohibitedItems.map(i => `<div>🚫 ${i}</div>`).join('');
-                    } else if (page === 'orders') {
-                        const ordersList = document.getElementById('ordersList');
-                        if (userOrders.length) {
-                            ordersList.innerHTML = userOrders.map(o => `
-                                <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-                                    <span style="font-family:monospace;">${o.track_code}</span>
-                                    <span style="color:${o.status === 'Доставлен' ? '#4CAF50' : '#FFC107'};">${o.status}</span>
-                                </div>
-                            `).join('');
-                        } else {
-                            ordersList.innerHTML = 'Нет заказов';
-                        }
                     }
                 });
             });
 
-            // ---------- Кнопка "Мои заказы" ----------
             document.getElementById('myOrdersBtn').addEventListener('click', () => {
                 document.querySelector('.tab-item[data-tab="profile"]').click();
                 showProfilePage('ordersPage');
             });
 
-            // ---------- Переключение внутри валют ----------
             const showRatesBtn = document.getElementById('showRatesBtn');
             const showConverterBtn = document.getElementById('showConverterBtn');
             const ratesSection = document.getElementById('ratesSection');
@@ -970,7 +884,21 @@
                 converterSection.style.display = 'block';
             });
 
-            // ---------- Калькулятор доставки ----------
+            function updateConverter() {
+                const fromAmount = parseFloat(document.getElementById('fromAmount').value) || 0;
+                const fromRate = parseFloat(document.getElementById('fromCurrency').value) || 1;
+                const toRate = parseFloat(document.getElementById('toCurrency').value) || 1;
+                const result = (fromAmount * fromRate) / toRate;
+                document.getElementById('toAmount').value = result.toFixed(2);
+                const fromCode = document.getElementById('fromCurrency').selectedOptions[0]?.dataset.code || '?';
+                const toCode = document.getElementById('toCurrency').selectedOptions[0]?.dataset.code || '?';
+                document.getElementById('converterRate').innerText = `1 ${fromCode} = ${(fromRate / toRate).toFixed(4)} ${toCode}`;
+            }
+            document.getElementById('fromAmount').addEventListener('input', updateConverter);
+            document.getElementById('fromCurrency').addEventListener('change', updateConverter);
+            document.getElementById('toCurrency').addEventListener('change', updateConverter);
+            updateConverter();
+
             window.calculateDelivery = function() {
                 const country = document.getElementById('deliveryCountry').value;
                 const goodsType = parseFloat(document.getElementById('goodsType').value) || 1;
@@ -992,7 +920,6 @@
                 document.getElementById('calcResult').innerHTML = `💰 Стоимость: ${total.toFixed(2)} $`;
             };
 
-            // ---------- Настройки (аватар, имя, телефон, страна) ----------
             window.selectAvatar = function(avatar) {
                 userData.avatar = avatar;
                 localStorage.setItem('userAvatar', avatar);
@@ -1001,10 +928,10 @@
                 profileAvatarEl.innerText = avatar;
                 settingsAvatarEl.innerText = avatar;
             };
+
             window.saveSettings = function() {
                 const newName = settingsNameEl.value.trim();
                 const newPhone = settingsPhoneEl.value.trim();
-                const newCountry = settingsCountryEl.value;
                 if (newName) {
                     userData.firstName = newName;
                     localStorage.setItem('userName', newName);
@@ -1013,14 +940,11 @@
                     userData.phone = newPhone;
                     localStorage.setItem('userPhone', newPhone);
                 }
-                userData.country = newCountry;
-                localStorage.setItem('userCountry', newCountry);
                 updateUserUI();
                 alert('Настройки сохранены!');
                 showProfileMenu();
             };
 
-            // ---------- Инициализация ----------
             renderCurrencyTables();
             updateUserUI();
         });
