@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -123,7 +122,7 @@
         .button.small {
             padding: 8px 12px;
             font-size: 14px;
-            width: auto;
+            width: 100%;
             margin-top: 0;
         }
         
@@ -259,6 +258,18 @@
         .service-card .service-desc {
             font-size: 13px;
             color: var(--hint-color);
+        }
+        
+        .service-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .service-actions .button.small {
+            flex: 1;
+            min-width: 120px;
         }
         
         .input-group {
@@ -471,14 +482,36 @@
             border-color: var(--button-color);
         }
         
-        .service-actions {
+        .service-option-item {
+            background: var(--bg-color);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
             display: flex;
-            gap: 8px;
-            margin-top: 12px;
+            justify-content: space-between;
+            align-items: center;
         }
         
-        .service-actions .button.small {
-            flex: 1;
+        .service-option-info h4 {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .service-option-info p {
+            color: var(--hint-color);
+            font-size: 14px;
+        }
+        
+        .service-option-price {
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-right: 12px;
+        }
+        
+        .service-option-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
     </style>
 </head>
@@ -760,11 +793,46 @@
                 <h2 id="serviceDetailTitle"></h2>
                 <div class="card" id="serviceDetailDesc"></div>
             </div>
-            <!-- Страница заказа услуги -->
-            <div id="orderServicePage" class="page-content">
+            <!-- Страница выкупа товара -->
+            <div id="buyoutPage" class="page-content">
                 <div class="back-button" onclick="showServicesMenu()"><i class="fas fa-arrow-left"></i> Назад к услугам</div>
-                <h2 id="orderServiceTitle"></h2>
-                <div class="card" id="orderServiceForm"></div>
+                <h2>🛍️ Выкуп товара</h2>
+                <div class="card">
+                    <p style="margin-bottom: 20px;">Выберите подходящий вариант услуги:</p>
+                    
+                    <div class="service-option-item">
+                        <div class="service-option-info">
+                            <h4>Поиск по фото</h4>
+                            <p>Найдём товар по фотографии, проверим наличие у поставщиков</p>
+                        </div>
+                        <div class="service-option-action">
+                            <span class="service-option-price">500 ₽</span>
+                            <button class="button small" onclick="orderBuyoutOption('Поиск по фото', 500)">Заказать</button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-option-item">
+                        <div class="service-option-info">
+                            <h4>Поиск по URL</h4>
+                            <p>Проверим поставщика, качество товара, отзывы, надёжность</p>
+                        </div>
+                        <div class="service-option-action">
+                            <span class="service-option-price">1000 ₽</span>
+                            <button class="button small" onclick="orderBuyoutOption('Поиск по URL', 1000)">Заказать</button>
+                        </div>
+                    </div>
+                    
+                    <div class="service-option-item">
+                        <div class="service-option-info">
+                            <h4>Полный поиск товара</h4>
+                            <p>Подбор оптимального товара, проверка фабрики, тестовый образец</p>
+                        </div>
+                        <div class="service-option-action">
+                            <span class="service-option-price">1500 ₽</span>
+                            <button class="button small" onclick="orderBuyoutOption('Полный поиск товара', 1500)">Заказать</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -882,35 +950,35 @@
                     title: 'Авиа доставка', 
                     desc: 'Быстро и надёжно', 
                     fullDesc: '✈️ **Авиа доставка**\n\n✅ Срок доставки: 3-7 дней\n✅ Отслеживание по трек-номеру\n✅ Страховка включена\n✅ Отправка от 1 кг\n\n💰 **Стоимость:** от 10$/кг\n\n👤 **Менеджер:** @avia_manager\n📱 **WhatsApp:** +7 999 123 45 67',
-                    price: 10
+                    price: 0
                 },
                 { 
                     icon: '🚛', 
                     title: 'Авто карго', 
                     desc: 'Оптимально по цене', 
                     fullDesc: '🚛 **Авто карго**\n\n✅ Срок доставки: 14-21 день\n✅ Экономичный вариант\n✅ Подходит для крупных партий\n✅ Доставка "от двери до двери"\n\n💰 **Стоимость:** от 5$/кг\n\n👤 **Менеджер:** @auto_manager\n📱 **WhatsApp:** +7 999 234 56 78',
-                    price: 5
+                    price: 0
                 },
                 { 
                     icon: '🚆', 
                     title: 'ЖД доставка', 
                     desc: 'Стабильно и выгодно', 
                     fullDesc: '🚆 **Ж/Д доставка**\n\n✅ Срок доставки: 10-15 дней\n✅ Фиксированная стоимость\n✅ Для больших объёмов\n✅ Стабильные сроки\n\n💰 **Стоимость:** от 7$/кг\n\n👤 **Менеджер:** @rail_manager\n📱 **WhatsApp:** +7 999 345 67 89',
-                    price: 7
+                    price: 0
                 },
                 { 
                     icon: '📄', 
                     title: 'Белая доставка', 
                     desc: 'С официальной документацией', 
                     fullDesc: '📄 **Белая доставка**\n\n✅ Полное таможенное оформление\n✅ Все документы предоставляются\n✅ Работа с юридическими лицами\n✅ НДС и пошлины включены\n\n💰 **Стоимость:** от 15$/кг\n\n👤 **Менеджер:** @white_manager\n📱 **WhatsApp:** +7 999 456 78 90',
-                    price: 15
+                    price: 0
                 },
                 { 
                     icon: '⚡', 
                     title: 'Экспресс доставка', 
                     desc: 'Срочная доставка документов', 
                     fullDesc: '⚡ **Экспресс доставка**\n\n✅ Срок: 1-2 дня\n✅ Для документов и мелких грузов\n✅ Курьерская служба\n✅ Отслеживание в реальном времени\n\n💰 **Стоимость:** от 25$/кг\n\n👤 **Менеджер:** @express_manager\n📱 **WhatsApp:** +7 999 567 89 01',
-                    price: 25
+                    price: 0
                 },
                 { 
                     icon: '💸', 
@@ -932,12 +1000,7 @@
                     desc: 'Поиск и выкуп на 1688, Taobao', 
                     fullDesc: '🛍️ **Выкуп товара**\n\n✅ **Поиск по фото:** 500₽ — найдём товар по фотографии, проверим наличие\n✅ **Поиск по URL:** 1000₽ — проверим поставщика, качество, отзывы\n✅ **Полный поиск товара:** 1500₽ — подбор оптимального товара, проверка фабрики, тестовый образец\n\nНаходим лучших поставщиков, проверяем качество, выкупаем и доставляем.',
                     price: 0,
-                    hasOptions: true,
-                    options: [
-                        { name: 'Поиск по фото', price: 500 },
-                        { name: 'Поиск по URL', price: 1000 },
-                        { name: 'Полный поиск товара', price: 1500 }
-                    ]
+                    isBuyout: true
                 },
                 { 
                     icon: '✈️', 
@@ -951,7 +1014,7 @@
                     title: 'Поиск авто', 
                     desc: 'Подбор автомобилей в Китае', 
                     fullDesc: '🚗 **Поиск авто**\n\n✅ Поможем найти и купить автомобиль в Китае\n✅ Полное сопровождение сделки\n✅ Проверка истории автомобиля\n✅ Техническая инспекция\n✅ Доставка в РФ\n✅ Растаможка под ключ\n\n💰 **Стоимость услуги:** от 30000₽\n\n👤 **Менеджер:** @auto_search\n📱 **WhatsApp:** +7 999 890 12 34',
-                    price: 30000
+                    price: 0
                 },
                 { 
                     icon: '🔍', 
@@ -968,14 +1031,8 @@
                 card.className = 'service-card';
                 
                 let optionsHtml = '';
-                if (s.hasOptions && s.options) {
-                    optionsHtml = '<div class="service-actions">';
-                    s.options.forEach(option => {
-                        optionsHtml += `<button class="button small" onclick="event.stopPropagation(); orderService('${s.title}', '${option.name}', ${option.price})">${option.name}<br>${option.price}₽</button>`;
-                    });
-                    optionsHtml += '</div>';
-                } else if (s.price > 0) {
-                    optionsHtml = `<div class="service-actions"><button class="button small" onclick="event.stopPropagation(); orderService('${s.title}', '${s.title}', ${s.price})">Заказать за ${s.price}₽</button></div>`;
+                if (s.isBuyout) {
+                    optionsHtml = `<div class="service-actions"><button class="button small" onclick="event.stopPropagation(); showBuyoutPage()">Выбрать услугу</button></div>`;
                 }
                 
                 card.innerHTML = `
@@ -984,7 +1041,13 @@
                     <div class="service-desc">${s.desc}</div>
                     ${optionsHtml}
                 `;
-                card.addEventListener('click', () => showServiceDetail(s.title, s.fullDesc));
+                
+                if (s.isBuyout) {
+                    card.addEventListener('click', showBuyoutPage);
+                } else {
+                    card.addEventListener('click', () => showServiceDetail(s.title, s.fullDesc));
+                }
+                
                 servicesGrid.appendChild(card);
             });
 
@@ -1123,18 +1186,24 @@
                 document.getElementById('serviceDetailTitle').innerText = title;
                 document.getElementById('serviceDetailDesc').innerText = desc;
             };
-            window.orderService = function(serviceTitle, optionName, price) {
+            window.showBuyoutPage = function() {
+                document.querySelector('.tab-item[data-tab="profile"]').click();
+                document.querySelectorAll('#profileTab .page-content').forEach(p => p.classList.remove('active'));
+                document.getElementById('buyoutPage').classList.add('active');
+            };
+            window.orderBuyoutOption = function(optionName, price) {
                 if (userData.balance < price) {
                     alert(`❌ Недостаточно средств. Баланс: ${userData.balance} ₽, нужно: ${price} ₽`);
                     showBalanceRecharge();
                     return;
                 }
                 
-                if (confirm(`Заказать "${optionName}" за ${price} ₽?`)) {
+                if (confirm(`Заказать услугу "${optionName}" за ${price} ₽?`)) {
                     // Здесь будет API-запрос для списания средств
                     userData.balance -= price;
                     updateUserUI();
                     alert(`✅ Услуга "${optionName}" заказана! С вашего баланса списано ${price} ₽`);
+                    showServicesMenu();
                 }
             };
             window.showBalanceRecharge = function() {
@@ -1305,4 +1374,3 @@
     </script>
 </body>
 </html>
-```
